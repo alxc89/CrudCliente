@@ -8,5 +8,7 @@
         public string PhoneNumber { get; set; }
         public DateTime DateOfBirth { get; set; }
         public bool IsActive { get; set; }
+        public DateTime Create_at { get; set; }
+        public DateTime Update_at { get; set; }
     }
 }
