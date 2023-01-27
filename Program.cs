@@ -1,4 +1,5 @@
 using CrudCliente.api.Application.Implementation.Interface;
+using CrudCliente.api.Application.Implementation.Mappings;
 using CrudCliente.api.Application.Implementation.Services;
 using CrudCliente.api.Infrastructure.Database.Context;
 using CrudCliente.api.Infrastructure.Database.Repositories;
@@ -10,11 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<DataContext>(o =>
 {
-    o.UseSqlite("Data source=crud_cliente.db");
+    o.UseSqlite("Data source=crudCliente.db");
 });
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IClienteServices, ClienteServices>();
 builder.Services.AddControllers();
+builder.Services.AddAutoMapper(typeof(NovoClienteMappingProfile));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

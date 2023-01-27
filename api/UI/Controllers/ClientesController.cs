@@ -1,5 +1,8 @@
-﻿using CrudCliente.api.Application.Implementation.Interface;
+﻿using AutoMapper;
+using CrudCliente.api.Application.Implementation.Interface;
+using CrudCliente.api.Application.Implementation.Mappings;
 using CrudCliente.api.Domain.Entities;
+using CrudCliente.api.UI.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -11,10 +14,12 @@ namespace CrudCliente.api.UI.Controllers
     public class ClientesController : ControllerBase
     {
         private readonly IClienteServices _clienteServices;
+        private readonly IMapper _mapper;
 
-        public ClientesController(IClienteServices clienteServices)
+        public ClientesController(IClienteServices clienteServices, IMapper mapper)
         {
             _clienteServices = clienteServices;
+            _mapper = mapper;
         }
 
         // GET: api/<ClientesController>
@@ -40,19 +45,22 @@ namespace CrudCliente.api.UI.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(Cliente), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Post([FromBody] Cliente cliente)
+        public async Task<IActionResult> Post([FromBody] NovoClienteDTO novoClienteDTO)
         {
-            var novoCliente = await _clienteServices.InsertAsync(cliente);
+            var novoCliente = _mapper.Map<Cliente>(novoClienteDTO);
+            await _clienteServices.InsertAsync(novoCliente);
             return CreatedAtAction(nameof(Get), new { novoCliente.Id }, novoCliente);
         }
 
         // PUT api/<ClientesController>/5
+        [HttpPut]
         [ProducesResponseType(typeof(Cliente), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Put([FromBody] Cliente cliente)
+        public async Task<IActionResult> Put([FromBody] AlteraClienteDTO alteraClienteDTO)
         {
-            var clienteAtualizado = await _clienteServices.UpdateAsync(cliente);
+            var clienteAtualizado = _mapper.Map<Cliente>(alteraClienteDTO);
+            await _clienteServices.UpdateAsync(clienteAtualizado);
             if (clienteAtualizado == null)
             {
                 return NotFound();
